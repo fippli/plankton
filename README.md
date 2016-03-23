@@ -1,3 +1,3 @@
-# fipplipong
+# plankton
 Its a game
 
