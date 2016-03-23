@@ -136,7 +136,6 @@ var Background = function (screenHeight, screenWidth) {
 		ctx.font = "50px gamefont";
 		ctx.fillText("Your Score: " + points, 20, 200);
 		ctx.fillText("High Score: " + gameState.getHighScore(), 20, 300);
-
 	}
 
 	var drawPoints = function (gameScreen, player) {
