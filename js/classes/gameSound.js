@@ -1,5 +1,5 @@
 var GameSound = function () {
-	var snd = new Audio("/games/plankton/res/snd/music.wav"); // buffers automatically when created
+	var snd = new Audio("res/snd/music.wav"); // buffers automatically when created
 	
 	snd.addEventListener('ended', function () {
 		this.currentTime = 0;
