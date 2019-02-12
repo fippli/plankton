@@ -1,4 +1,4 @@
-# [Plankton](plankton.fippli.se)
+# [Plankton](http://plankton.fippli.se)
 Its a game
 
 
