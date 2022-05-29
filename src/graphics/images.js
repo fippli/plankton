@@ -1,14 +1,13 @@
 /**
  * BACKGROUND
  */
-const backgroundImage = new Image();
-backgroundImage.src = "images/backgrounds/background.png";
 
-const seaBottomImage = new Image();
-seaBottomImage.src = "images/backgrounds/seabottom2.png";
+const backgroundImage = await loadImage("images/backgrounds/background.png");
+const seaBottomImage = await loadImage("images/backgrounds/seabottom2.png");
 
 const cliff1Image = new Image();
 cliff1Image.src = "images/backgrounds/cliff1.png";
+const groundImage = await loadImage("img/ground.png");
 
 const cliff2Image = new Image();
 cliff2Image.src = "images/backgrounds/cliff2.png";

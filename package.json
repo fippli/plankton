@@ -1,0 +1,24 @@
+{
+  "name": "plankton",
+  "version": "1.0.0",
+  "description": "Its a game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "rollup ./src/index.js --file ./docs/main.js --format iife"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fippli/plankton.git"
+  },
+  "author": "Filip Johansson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fippli/plankton/issues"
+  },
+  "homepage": "https://github.com/fippli/plankton#readme",
+  "devDependencies": {
+    "prettier": "^2.6.2",
+    "rollup": "^2.75.1"
+  }
+}

@@ -1,9 +1,9 @@
-const identity = (x) => x;
+export const identity = (x) => x;
 
-const isNull = (x) => x === null;
-const isNotNull = (x) => x !== null;
+export const isNull = (x) => x === null;
+export const isNotNull = (x) => x !== null;
 
-const onCondition = (condition, yes, no) => {
+export const onCondition = (condition, yes, no) => {
   if (condition) {
     console.log("yes!", yes);
     return yes;
@@ -11,16 +11,16 @@ const onCondition = (condition, yes, no) => {
   return no;
 };
 
-const random = (start, end) => Math.floor(Math.random() * end + start);
+export const random = (start, end) => Math.floor(Math.random() * end + start);
 
-const between =
+export const between =
   ({ x: ax, width: aw }) =>
   ({ x: bx, width: bw }) =>
     ax < bx + bw && ax + aw > bx;
 
-const onTop =
+export const onTop =
   ({ y: ay, height: ah }) =>
   ({ y: by, height: bh }) =>
     ay + ah - 5 <= by && ay + ah + 5 > by;
 
-const filter = (f) => (xs) => xs.filter(f);
+export const filter = (f) => (xs) => xs.filter(f);

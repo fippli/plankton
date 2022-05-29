@@ -1,7 +1,7 @@
 const screenWidth = 600;
 const screenHeight = 400;
 
-const initialState = Object.freeze({
+export const initialState = Object.freeze({
   _update: 0,
   background: {
     image: backgroundImage,
