@@ -1,8 +1,13 @@
-const loadImage = require("../core/loadImage");
+import { loadImage } from "../core/loadImage.js";
 
 export const createState = async (config) => {
-  const playerImage = await loadImage("img/player.png");
-  const groundImage = await loadImage("img/ground.png");
+  const backgroundImage = await loadImage("images/backgrounds/background.png");
+  const seaBottomImage = await loadImage("images/backgrounds/seabottom2.png");
+  const cliff1Image = await loadImage("images/backgrounds/cliff1.png");
+  const cliff2Image = await loadImage("images/backgrounds/cliff2.png");
+  const seaweedImage = await loadImage("images/backgrounds/seaweed.png");
+  const playerImage = await loadImage("images/player/red.png");
+  const bubbleImage = await loadImage("images/bubbles/bubble.png");
 
   return Object.freeze({
     _update: 0,
@@ -12,8 +17,8 @@ export const createState = async (config) => {
       x: 0,
       speed: { x: 0, y: 0 },
       direction: { x: 0, y: 1 },
-      width: 600,
-      height: screenHeight,
+      width: config.canvas.width,
+      height: config.canvas.height,
     },
     seabottom: {
       image: seaBottomImage,
@@ -21,8 +26,8 @@ export const createState = async (config) => {
       x: 0,
       speed: { x: 0, y: 0.05 },
       direction: { x: 0, y: 1 },
-      width: screenWidth,
-      height: screenHeight,
+      width: config.canvas.width,
+      height: config.canvas.height,
     },
     cliff1_0: {
       image: cliff1Image,
@@ -30,17 +35,17 @@ export const createState = async (config) => {
       x: 0,
       speed: { x: 0, y: 0.3 },
       direction: { x: 0, y: 1 },
-      width: screenWidth,
-      height: screenHeight,
+      width: config.canvas.width,
+      height: config.canvas.height,
     },
     cliff1_1: {
       image: cliff1Image,
-      y: -screenHeight,
+      y: -config.canvas.height,
       x: 0,
       speed: { x: 0, y: 0.3 },
       direction: { x: 0, y: 1 },
-      width: screenWidth,
-      height: screenHeight,
+      width: config.canvas.width,
+      height: config.canvas.height,
     },
     cliff2_0: {
       image: cliff2Image,
@@ -48,17 +53,17 @@ export const createState = async (config) => {
       x: 0,
       speed: { x: 0, y: 0.7 },
       direction: { x: 0, y: 1 },
-      width: screenWidth,
-      height: screenHeight,
+      width: config.canvas.width,
+      height: config.canvas.height,
     },
     cliff2_1: {
       image: cliff2Image,
-      y: -screenHeight,
+      y: -config.canvas.height,
       x: 0,
       speed: { x: 0, y: 0.7 },
       direction: { x: 0, y: 1 },
-      width: screenWidth,
-      height: screenHeight,
+      width: config.canvas.width,
+      height: config.canvas.height,
     },
     seaweed: {
       image: seaweedImage,
@@ -66,25 +71,29 @@ export const createState = async (config) => {
       x: 0,
       speed: { x: 0, y: 1.5 },
       direction: { x: 0, y: 1 },
-      width: screenWidth,
-      height: screenHeight,
+      width: config.canvas.width,
+      height: config.canvas.height,
     },
     player: {
       image: playerImage,
       speed: { x: 2, y: 10 },
       direction: { x: 1, y: 1 },
-      x: (screenWidth - 20) / 2,
-      y: 0, //screenHeight - 20,
-      width: 20,
-      height: 20,
+      x: (config.canvas.width - playerImage.width) / 2,
+      y:
+        config.canvas.height -
+        (playerImage.height * config.canvas.width) / backgroundImage.width,
+      width: (playerImage.width * config.canvas.width) / backgroundImage.width,
+      height:
+        (playerImage.height * config.canvas.width) / backgroundImage.width,
       jumping: false,
       allowJump: true,
+      gravity: 0.2,
     },
 
     bubbles: [
       {
-        x: (screenWidth - 20) / 5 - screenWidth / 5 / 2,
-        y: screenHeight,
+        x: (config.canvas.width - 20) / 5 - config.canvas.width / 5 / 2,
+        y: config.canvas.height,
         speed: { x: 0, y: 2 },
         direction: { x: 0, y: -1 },
         image: bubbleImage,
@@ -93,8 +102,8 @@ export const createState = async (config) => {
         height: 20,
       },
       {
-        x: (screenWidth - 20) / (5 / 2) - screenWidth / 5 / 2,
-        y: screenHeight,
+        x: (config.canvas.width - 20) / (5 / 2) - config.canvas.width / 5 / 2,
+        y: config.canvas.height,
         speed: { x: 0, y: 2 },
         direction: { x: 0, y: -1 },
         image: bubbleImage,
@@ -103,8 +112,8 @@ export const createState = async (config) => {
         height: 20,
       },
       {
-        x: (screenWidth - 20) / (5 / 3) - screenWidth / 5 / 2,
-        y: screenHeight,
+        x: (config.canvas.width - 20) / (5 / 3) - config.canvas.width / 5 / 2,
+        y: config.canvas.height,
         speed: { x: 0, y: 2 },
         direction: { x: 0, y: -1 },
         image: bubbleImage,
@@ -113,8 +122,8 @@ export const createState = async (config) => {
         height: 20,
       },
       {
-        x: (screenWidth - 20) / (5 / 4) - screenWidth / 5 / 2,
-        y: screenHeight,
+        x: (config.canvas.width - 20) / (5 / 4) - config.canvas.width / 5 / 2,
+        y: config.canvas.height,
         speed: { x: 0, y: 2 },
         direction: { x: 0, y: -1 },
         image: bubbleImage,
@@ -123,8 +132,8 @@ export const createState = async (config) => {
         height: 20,
       },
       {
-        x: screenWidth - 20 - screenWidth / 5 / 2,
-        y: screenHeight,
+        x: config.canvas.width - 20 - config.canvas.width / 5 / 2,
+        y: config.canvas.height,
         speed: { x: 0, y: 2 },
         direction: { x: 0, y: -1 },
         image: bubbleImage,
@@ -136,6 +145,6 @@ export const createState = async (config) => {
 
     eternalVoid: false,
     animateBackground: false,
-    gravity: 0.2,
+    ...config,
   });
 };

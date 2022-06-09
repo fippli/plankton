@@ -1,37 +1,15 @@
-/**
- * BACKGROUND
- */
-
-const backgroundImage = await loadImage("images/backgrounds/background.png");
-const seaBottomImage = await loadImage("images/backgrounds/seabottom2.png");
-
-const cliff1Image = new Image();
-cliff1Image.src = "images/backgrounds/cliff1.png";
-const groundImage = await loadImage("img/ground.png");
-
-const cliff2Image = new Image();
-cliff2Image.src = "images/backgrounds/cliff2.png";
-
-const seaweedImage = new Image();
-seaweedImage.src = "images/backgrounds/seaweed.png";
-
-/**
- * PLAYER
- */
-const playerImage = new Image();
-playerImage.src = "images/player/red.png";
-
-/**
- * BUBBLES
- */
-const bubbleImage = new Image();
-bubbleImage.src = "images/bubbles/bubble.png";
-
-const bubbleBurstImage = new Image();
-bubbleBurstImage.src = "images/bubbles/burst.png";
-
-/**
- * SUNLIGHT
- */
-const sunlightImage = new Image();
-sunlightImage.src = "images/items/sunlight/sunlight.png";
+// export const backgroundImage = await loadImage(
+//   "images/backgrounds/background.png"
+// );
+// export const seaBottomImage = await loadImage(
+//   "images/backgrounds/seabottom2.png"
+// );
+// export const cliff1Image = await loadImage("images/backgrounds/cliff1.png");
+// export const cliff2Image = await loadImage("images/backgrounds/cliff2.png");
+// export const seaweedImage = await loadImage("images/backgrounds/seaweed.png");
+// export const playerImage = await loadImage("images/player/red.png");
+export const bubbleImage = await loadImage("images/bubbles/bubble.png");
+export const bubbleBurstImage = await loadImage("images/bubbles/burst.png");
+export const sunlightImage = await loadImage(
+  "images/items/sunlight/sunlight.png"
+);

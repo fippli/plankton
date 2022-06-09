@@ -1,0 +1,23 @@
+@font-face {
+  font-family: gamefont;
+  src: url("/font/slkscre.ttf");
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#canvas {
+  border: 1px dashed #cd6600;
+}

@@ -24,3 +24,8 @@ export const onTop =
     ay + ah - 5 <= by && ay + ah + 5 > by;
 
 export const filter = (f) => (xs) => xs.filter(f);
+
+export const trace = (x) => {
+  console.log(x);
+  return x;
+};

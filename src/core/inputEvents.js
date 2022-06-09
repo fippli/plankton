@@ -16,7 +16,7 @@ const keymap = {
 
 const getKey = (event) => (event.keyCode ? event.keyCode : event.which);
 
-const Events = (function () {
+export const inputEvents = (function () {
   "use strict";
 
   let events = [];
@@ -32,14 +32,19 @@ const Events = (function () {
   };
 
   window.onkeydown = (event) => {
+    console.log(press(event));
     remove(release(event));
     add(press(event));
   };
 
   window.onkeyup = (event) => {
+    console.log(release(event));
     remove(press(event));
     add(release(event));
   };
 
-  return () => new Promise((resolve, _) => resolve(events));
+  return (state) => ({
+    ...state,
+    events,
+  });
 })();

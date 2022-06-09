@@ -44,6 +44,5 @@ const Actions = (function () {
   const convertEventsToActions = (state, events) =>
     events.reduce(getAction(state), []);
 
-  return (state) => (events) =>
-    new Promise((resolve, _) => resolve(convertEventsToActions(state, events)));
+  return (state) => convertEventsToActions(state, events);
 })();

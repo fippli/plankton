@@ -1,87 +1,61 @@
-import { initialState } from "./state/initialState.js";
+import { Canvas } from "./core/Canvas.js";
+import { trace } from "./core/functional.js";
+import { GameLoop } from "./core/GameLoop.js";
+import { inputEvents } from "./core/inputEvents.js";
+import {
+  playerGravity,
+  playerGroundCollision,
+  playerJump,
+} from "./core/movement/player.js";
+import { stateChain } from "./core/stateChain.js";
+import { clearStack, Debug, pushStack } from "./debug/Debug.js";
+import { throwWhen } from "./debug/throwWhen.js";
+import { render } from "./render.js";
+import { createState } from "./state/createState.js";
 
-const logIfNotEmpty = (xs) => {
-  if (xs.length > 0) {
-    console.log(xs);
-  }
-};
+// (function () {
+//   "use strict";
 
-const trace =
-  (message = "trace ->") =>
-  (xs) => {
-    if (true) {
-      if (false) console.log(message);
-      logIfNotEmpty(xs);
-      return xs;
-    }
-  };
+//   const gameLoop = (state) => () => {
+//     try {
+//       const nextState = stateChain(state, (state) => state);
+//       const {} = nextState;
+//       const renderObjects = [];
+//       renderObjects.forEach(drawObject(context));
 
-const GameLoop = (function () {
-  "use strict";
+//       return nextState;
 
-  const clearCanvas = (context, canvas) => {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-  };
+//       // Graphics(state);
 
-  const loop = (gameLogic, state) => (timestamp) => {
-    try {
-      const { canvas, context } = state;
-      clearCanvas(context, canvas);
-    } catch (error) {
-      console.log(context, canvas);
-      throw new Error("Game loop requires canvas dimensions and context");
-    }
+//       // return Events()
+//       //   .then(Actions(state))
+//       //   .then(Movement(state))
+//       //   .then(Collision(state))
+//       //   .then(filter(isNotNull))
+//       //   .then(updateState(state))
+//       //   .then(gameLoop)
+//       //   .then(requestAnimationFrame);
+//     } catch (error) {
+//       console.warn("Error update", state._update);
+//       console.warn(state);
+//       console.error(error);
+//     }
+//   };
 
-    const nextState = gameLogic(state, timestamp);
+//   gameLoop(initialState)();
+// })();
 
-    window.requestAnimationFrame(loop(gameLogic, nextState));
-  };
+const gameLogic = (state, _) =>
+  stateChain(
+    state,
+    inputEvents,
+    playerGravity,
+    playerGroundCollision,
+    playerJump,
+    Debug.when((state) => false)
+  );
 
-  return (gameLogic) => (initialState) => {
-    const gameLoop = loop(gameLogic, initialState);
-    window.requestAnimationFrame(gameLoop);
-  };
-})();
+const addDefaults = (state) => ({ ...state, defaults: state });
+const game = GameLoop(gameLogic, render);
 
-const stateChain = (state, ...functions) => {
-  if (functions.length === 0) {
-    return state;
-  }
-
-  const [nextFunction, ...rest] = functions;
-
-  const nextState = nextFunction(state);
-  return stateChain(nextState, ...rest);
-};
-
-(function () {
-  "use strict";
-
-  const gameLoop = (state) => () => {
-    try {
-      const nextState = stateChain(state, (state) => state);
-      const {} = nextState;
-      const renderObjects = [];
-      renderObjects.forEach(drawObject(context));
-
-      return nextState;
-
-      // Graphics(state);
-
-      // return Events()
-      //   .then(Actions(state))
-      //   .then(Movement(state))
-      //   .then(Collision(state))
-      //   .then(filter(isNotNull))
-      //   .then(updateState(state))
-      //   .then(gameLoop)
-      //   .then(requestAnimationFrame);
-    } catch (error) {
-      console.warn("Error update", state._update);
-      console.warn(state);
-      console.error(error);
-    }
-  };
-
-  gameLoop(initialState)();
-})();
+createState(Canvas()).then(addDefaults).then(game);
