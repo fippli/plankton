@@ -1,12 +1,12 @@
-export const drawObject =
-  (context) =>
-  ({ image, x, y, width, height }) => {
-    try {
-      context.drawImage(image, x, y, width, height);
-    } catch (error) {
-      console.log(image, x, y, width, height);
-    }
-  };
+export const drawObject = (context) => (renderObject, index) => {
+  try {
+    const { renderImage, x, y, width, height } = renderObject;
+    context.drawImage(renderObject[renderImage], x, y, width, height);
+  } catch (error) {
+    console.log(index, image, x, y, width, height);
+    throw error;
+  }
+};
 
 export const render = (state) => {
   const {
@@ -30,7 +30,7 @@ export const render = (state) => {
     cliff2_0,
     cliff2_1,
     seaweed,
-    // ...bubbles,
+    ...bubbles,
     player,
   ];
 

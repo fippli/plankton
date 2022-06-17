@@ -22,7 +22,7 @@ export const inputEvents = (function () {
   let events = [];
 
   const add = (userEvent) => {
-    events = [...events, userEvent];
+    events = events.includes(userEvent) ? events : [...events, userEvent];
   };
 
   const press = (event) => `PRESS_${keymap[getKey(event)]}`;
