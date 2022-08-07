@@ -57,6 +57,7 @@ export const createBubble = ({
 
   burstLevel: canvas.height / 3,
   isActive: true,
+  hitbox: 10,
 });
 
 export const createBubbles = ({

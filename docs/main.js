@@ -14,13 +14,33 @@
       });
     }, object);
 
-  const move = (key) => (movable) => ({
+  const updateState = modifyObject;
+
+  const activateEternalVoid = (state) => {
+    const { player, canvas } = state;
+
+    const updateWith = updateState(state);
+
+    if (player.y < canvas.height - player.height) {
+      updateWith({
+        eternalVoid: true,
+        animateBackground: true,
+        ground: {
+          isActive: false,
+        },
+      });
+    }
+
+    return state;
+  };
+
+  const move$1 = (key) => (movable) => ({
     ...movable,
     [key]: movable[key] + movable.speed[key] * movable.direction[key],
   });
 
-  const moveHorizonal = move("x");
-  const moveVertical = move("y");
+  const moveHorizonal = move$1("x");
+  const moveVertical = move$1("y");
 
   const UP$1 = "UP";
   const DOWN$1 = "DOWN";
@@ -74,8 +94,6 @@
 
   const loopDown = loop$1(DOWN$1);
   const loopUp = loop$1(UP$1);
-
-  const updateState = modifyObject;
 
   const loopBackgrounds = (state) => {
     const { cliff1_0, cliff1_1, cliff2_0, cliff2_1 } = state;
@@ -212,6 +230,7 @@
 
     burstLevel: canvas.height / 3,
     isActive: true,
+    hitbox: 10,
   });
 
   const createBubbles = ({
@@ -339,7 +358,7 @@
 
   const getKey = (event) => (event.keyCode ? event.keyCode : event.which);
 
-  const inputEvents = (function () {
+  const events$1 = (function () {
 
     let events = [];
 
@@ -371,104 +390,71 @@
     });
   })();
 
-  const gravity = (state) => {
-    const {
-      player: { y, speed, direction, gravity, isJumping, isOnPlatform },
-    } = state;
-
-    const updateWith = updateState(state);
-
-    return updateWith({ player: { y: y + direction.y * speed.y * gravity } });
-  };
-
   const PRESS_UP = "PRESS_UP";
   const PRESS_DOWN = "PRESS_DOWN";
   const PRESS_LEFT = "PRESS_LEFT";
   const PRESS_RIGHT = "PRESS_RIGHT";
+  const RELEASE_UP = "RELEASE_UP";
+  const RELEASE_DOWN = "RELEASE_DOWN";
+  const RELEASE_LEFT = "RELEASE_LEFT";
+  const RELEASE_RIGHT = "RELEASE_RIGHT";
 
   const Input = {
     PRESS_RIGHT,
     PRESS_DOWN,
     PRESS_LEFT,
     PRESS_UP,
+    RELEASE_RIGHT,
+    RELEASE_DOWN,
+    RELEASE_LEFT,
+    RELEASE_UP,
+    events: events$1,
   };
 
-  const getDirectionYFrom = (player) => {
-    if (player.direction.y === 0) {
-      return -1;
-    }
-    return player.speed.y <= 0 ? 1 : player.direction.y;
-  };
+  // const getNextDirectionYFrom = (direction, speed) => {
+  //   return speed.y < 0 ? 1 : direction.y;
+  // };
 
-  const jump = (state) => {
-    const { player, events } = state;
+  const gravity = (state) => {
+    const {
+      player: { y, speed, direction, gravity },
+    } = state;
 
     const updateWith = updateState(state);
 
-    if (player.isJumping) {
-      const y = player.y + player.speed.y * player.gravity * player.direction.y;
-      const directionY = getDirectionYFrom(player);
-      const speedY = directionY < 0 ? player.speed.y - 0.1 : player.speed.y + 0.1;
+    // const nextDirectionY = getNextDirectionYFrom(direction, speed);
 
-      return updateWith({
-        player: {
-          y,
-          speed: { ...player.speed, y: speedY },
-          direction: { ...player.direction, y: directionY },
-        },
-      });
-    }
+    // console.table(speed);
+    // console.table(direction);
 
-    if (events.includes(Input.PRESS_UP) && !player.isJumping) {
-      return updateWith({
-        player: {
-          direction: {
-            ...player.direction,
-            y: -1,
-          },
-          isJumping: player.isAllowedToJump ? true : player.isJumping,
-          isAllowedToJump: false,
+    return updateWith({
+      player: {
+        y: y + direction.y * speed.y,
+        speed: {
+          ...speed,
+          y: speed.y + gravity * direction.y,
         },
-        ground: {
-          // isActive: false,
+        direction: {
+          ...direction,
+          y: speed.y < 0 ? 1 : direction.y,
         },
-        eternalVoid: true,
-        animateBackground: true,
-      });
-    }
-
-    return state;
+      },
+    });
   };
 
-  const moveLeft = (state) => {
-    const { events, player } = state;
-    const updateWith = updateState(state);
+  // if (player.direction.y !== 0) {
+  //   const y = player.y + player.speed.y * player.gravity * player.direction.y;
+  //   const directionY = getDirectionYFrom(player);
+  //   const speedY = directionY < 0 ? player.speed.y - 0.1 : player.speed.y + 0.1;
 
-    if (events.includes(Input.PRESS_LEFT)) {
-      return updateWith({
-        player: {
-          x: player.x - player.speed.x,
-        },
-      });
-    }
-
-    return state;
-  };
-
-  const moveRight = (state) => {
-    const { events, player } = state;
-    const updateWith = updateState(state);
-
-    if (events.includes(Input.PRESS_RIGHT)) {
-      return updateWith({
-        player: {
-          x: player.x + player.speed.x,
-        },
-      });
-    }
-
-    return state;
-  };
+  //   return updateWith({
+  //     player: {
+  //       y,
+  //       speed: { ...player.speed, y: speedY },
+  //       direction: { ...player.direction, y: directionY },
+  //     },
+  //   });
+  // }
 
   const isOnPlatform = (object) => (platform) => {
     // TODO
@@ -477,11 +463,57 @@
     return between(object)(platform) && onTop(object)(platform);
   };
 
+  const find = (movable, ...movables) =>
+    movables.filter((x) => x.isActive).filter(isOnPlatform(movable));
+
+  const Collision = {
+    find,
+    platforms: (state) => {
+      const { player, bubbles, ground } = state;
+      return find(player, ...bubbles, ground);
+    },
+  };
+
+  const jump = (state) => {
+    const { player, events } = state;
+
+    const updateWith = updateState(state);
+    Collision.platforms(state);
+
+    if (events.includes(Input.PRESS_UP) && player.isOnPlatform) {
+      return updateWith({
+        player: {
+          direction: {
+            ...player.direction,
+            y: -1,
+          },
+          speed: {
+            ...player.speed, // todo: add platform speed
+            y: 15, // fixme
+          },
+        },
+      });
+    }
+
+    return state;
+  };
+
+  const Direction = {
+    isUp: (movable) => movable.direction.y === -1,
+    isDown: (movable) => movable.direction.y === 1,
+    isLeft: (movable) => movable.direction.y === -1,
+    isRight: (movable) => movable.direction.y === 1,
+    isNeutral: (movable) => movable.direction.y === 0,
+    UP: -1,
+    DOWN: 1,
+    LEFT: -1,
+    RIGHT: 1,
+    NEUTRAL: 0,
+  };
+
   const placeOnPlatform = (player) => (platform) => ({
     y: platform.y - player.height,
     isOnPlatform: true,
-    isJumping: false,
-    isAllowedToJump: true,
     direction: {
       ...player.direction,
       y: 0,
@@ -489,42 +521,172 @@
   });
 
   const platformCollision = (state) => {
-    const { player, ground, bubbles } = state;
+    const { player, ground, bubbles, eternalVoid } = state;
     const updateWith = updateState(state);
 
-    const platforms = [...bubbles, ground];
+    const collidedPlatforms = Collision.find(player, ...bubbles, ground);
 
-    const collidedPlatforms = platforms
-      .filter((platform) => platform.isActive)
-      .filter(isOnPlatform(player));
-
-    if (
-      !player.isOnPlatform &&
-      collidedPlatforms.length > 0 &&
-      player.direction.y >= 0
-    ) {
-      return updateWith({
-        player: placeOnPlatform(player)(collidedPlatforms[0]),
+    if (collidedPlatforms.length === 0) {
+      updateWith({
+        player: {
+          isOnPlatform: false,
+        },
       });
     }
 
-    return updateWith({
+    if (!player.isOnPlatform) {
+      if (collidedPlatforms.length > 0) {
+        if (Direction.isDown(player)) {
+          return updateWith({
+            player: placeOnPlatform(player)(collidedPlatforms[0]),
+          });
+        } else {
+          if (eternalVoid) {
+            return updateWith({
+              player: {
+                isOnPlatform: false,
+                direction: {
+                  ...player.direction,
+                  y: Direction.DOWN,
+                },
+              },
+            });
+          }
+
+          return state;
+        }
+      } else {
+        if (Direction.isDown(player)) {
+          return state;
+        } else {
+          return updateWith({
+            player: {
+              direction: {
+                ...player.direction,
+                y: Direction.DOWN,
+              },
+              speed: {
+                ...player.speed,
+                y: 1,
+              },
+            },
+          });
+        }
+      }
+    } else {
+      if (collidedPlatforms.length > 0) {
+        return updateWith({
+          player: placeOnPlatform(player)(collidedPlatforms[0]),
+        });
+      }
+
+      // if (collidedPlatforms.length === 0) {
+      //   updateWith({
+      //     player: {
+      //       isOnPlatform: false,
+      //     },
+      //   });
+      // }
+
+      return state;
+    }
+  };
+
+  const move = (state) => {
+    const { player } = state;
+    const updateWith = updateState(state);
+
+    updateWith({
       player: {
-        isOnPlatform: false,
-        direction: {
-          ...player.direction,
-          y: 1,
-        },
+        x: player.x + player.speed.x * player.direction.x,
+        y: player.y + player.speed.y * player.direction.y,
       },
     });
+
+    return state;
+  };
+
+  const events = (state) => {
+    const { events, player } = state;
+    const updateWith = updateState(state);
+
+    if (events.includes(Input.PRESS_LEFT)) {
+      return updateWith({
+        player: {
+          direction: {
+            ...player.direction,
+            x: -1,
+          },
+          speed: {
+            ...player.speed,
+            x: 10, // fixme
+          },
+        },
+      });
+    }
+
+    if (events.includes(Input.PRESS_RIGHT)) {
+      return updateWith({
+        player: {
+          direction: {
+            ...player.direction,
+            x: 1,
+          },
+          speed: {
+            ...player.speed,
+            x: 10, // fixme
+          },
+        },
+      });
+    }
+
+    if (events.includes(Input.RELEASE_LEFT)) {
+      return updateWith({
+        player: {
+          speed: {
+            ...player.speed,
+            x: 0,
+          },
+        },
+      });
+    }
+
+    if (events.includes(Input.RELEASE_RIGHT)) {
+      return updateWith({
+        player: {
+          speed: {
+            ...player.speed,
+            x: 0,
+          },
+        },
+      });
+    }
+
+    return state;
+  };
+
+  const die = (state) => {
+    const { canvas, player } = state;
+    const updateWith = updateState(state);
+
+    if (player.y > canvas.height + player.height * 2) {
+      return updateWith({
+        player: {
+          alive: false,
+        },
+      });
+    }
+
+    return state;
   };
 
   const Player = {
     gravity,
     jump,
-    moveLeft,
-    moveRight,
     platformCollision,
+    move,
+    events,
+    die,
   };
 
   let stack = [];
@@ -724,11 +886,18 @@
         width: config.canvas.width,
         height: config.canvas.height,
       },
+
       player: {
         image: playerImage,
         renderImage: "image",
-        speed: { x: config.canvas.width / 100, y: config.canvas.height / 100 },
-        direction: { x: 0, y: 0 },
+        speed: {
+          x: config.canvas.width / 100,
+          y: config.canvas.height / 100,
+        },
+        direction: {
+          x: 0,
+          y: 0,
+        },
         x: (config.canvas.width - playerImage.width) / 2,
         y:
           config.canvas.height -
@@ -736,15 +905,18 @@
         width: (playerImage.width * config.canvas.width) / backgroundImage.width,
         height:
           (playerImage.height * config.canvas.width) / backgroundImage.width,
-        isJumping: false,
-        isAllowedToJump: true,
-        gravity: config.canvas.height / 1000,
+        gravity: 0.2,
         isOnPlatform: true,
+        alive: true,
       },
 
       ground: {
         x: 0,
         y: config.canvas.height + 1,
+        speed: {
+          x: 0,
+          y: 0,
+        },
         width: config.canvas.width,
         height: 1,
         isActive: true,
@@ -768,7 +940,9 @@
   const gameLogic = (state, _) =>
     stateChain(
       state,
-      inputEvents,
+      Input.events,
+
+      activateEternalVoid,
 
       Player.platformCollision,
 
@@ -780,9 +954,10 @@
       Bubbles.loop,
       Bubbles.burst,
 
-      Player.moveLeft,
-      Player.moveRight,
+      Player.events,
+      Player.move,
       Player.gravity,
+      Player.die,
 
       Bubbles.reset,
       Debug.when((state) => false)
@@ -791,6 +966,6 @@
   const addDefaults = (state) => ({ ...state, defaults: state });
   const game = GameLoop(gameLogic, render);
 
-  createState(Canvas()).then(trace).then(addDefaults).then(game);
+  createState(Canvas()).then(trace).then(addDefaults).then(trace).then(game);
 
 })();

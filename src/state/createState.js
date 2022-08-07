@@ -100,11 +100,18 @@ export const createState = async (config) => {
       width: config.canvas.width,
       height: config.canvas.height,
     },
+
     player: {
       image: playerImage,
       renderImage: "image",
-      speed: { x: config.canvas.width / 100, y: config.canvas.height / 100 },
-      direction: { x: 0, y: 0 },
+      speed: {
+        x: config.canvas.width / 100,
+        y: config.canvas.height / 100,
+      },
+      direction: {
+        x: 0,
+        y: 0,
+      },
       x: (config.canvas.width - playerImage.width) / 2,
       y:
         config.canvas.height -
@@ -112,15 +119,18 @@ export const createState = async (config) => {
       width: (playerImage.width * config.canvas.width) / backgroundImage.width,
       height:
         (playerImage.height * config.canvas.width) / backgroundImage.width,
-      isJumping: false,
-      isAllowedToJump: true,
-      gravity: config.canvas.height / 1000,
+      gravity: 0.2,
       isOnPlatform: true,
+      alive: true,
     },
 
     ground: {
       x: 0,
       y: config.canvas.height + 1,
+      speed: {
+        x: 0,
+        y: 0,
+      },
       width: config.canvas.width,
       height: 1,
       isActive: true,

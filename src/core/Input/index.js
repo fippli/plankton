@@ -1,11 +1,22 @@
+import { events } from "./events";
+
 const PRESS_UP = "PRESS_UP";
 const PRESS_DOWN = "PRESS_DOWN";
 const PRESS_LEFT = "PRESS_LEFT";
 const PRESS_RIGHT = "PRESS_RIGHT";
+const RELEASE_UP = "RELEASE_UP";
+const RELEASE_DOWN = "RELEASE_DOWN";
+const RELEASE_LEFT = "RELEASE_LEFT";
+const RELEASE_RIGHT = "RELEASE_RIGHT";
 
 export const Input = {
   PRESS_RIGHT,
   PRESS_DOWN,
   PRESS_LEFT,
   PRESS_UP,
+  RELEASE_RIGHT,
+  RELEASE_DOWN,
+  RELEASE_LEFT,
+  RELEASE_UP,
+  events,
 };

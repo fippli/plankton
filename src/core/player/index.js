@@ -1,13 +1,15 @@
 import { gravity } from "./gravity";
 import { jump } from "./jump";
-import { moveLeft } from "./moveLeft";
-import { moveRight } from "./moveRight";
 import { platformCollision } from "./platformCollision";
+import { move } from "./move";
+import { events } from "./events";
+import { die } from "./die";
 
 export const Player = {
   gravity,
   jump,
-  moveLeft,
-  moveRight,
   platformCollision,
+  move,
+  events,
+  die,
 };

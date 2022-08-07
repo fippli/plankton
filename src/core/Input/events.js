@@ -16,7 +16,7 @@ const keymap = {
 
 const getKey = (event) => (event.keyCode ? event.keyCode : event.which);
 
-export const inputEvents = (function () {
+export const events = (function () {
   "use strict";
 
   let events = [];
